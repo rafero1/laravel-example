@@ -28,6 +28,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::all();
+ 
         return view('products.create', compact('categories'));
     }
 
@@ -39,12 +40,31 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        /**
+          Você pode criar uma classe de request validate e abstrair toda a validação para lá
+          https://laravel.com/docs/6.x/validation#form-request-validation
+        */
         $request->validate([
             'name' => 'required|max:255',
             'desc' => 'required|string',
             'quantity' => 'required|numeric',
             'category' => 'required'
         ]);
+        
+        /**
+           Exemplos mais simples
+           
+           Product::create([
+            'name' => $request->name,
+            .....
+           ]);
+           
+           Todos os dados de produtos são colocado em array no $request->all(),
+           o model entende apartir dos campos que tem setado nele, e salva as informações
+           na tabela.
+           
+           Product::create($request->all());
+         */
 
         $product = new Product();
         $product->name = $request->get('name');
@@ -77,6 +97,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::all();
+        
         return view('products.edit', compact('product', 'categories'));
     }
 
@@ -115,6 +136,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
+ 
         return redirect()->route('home')->with('success', 'Produto removido.');
     }
 }
