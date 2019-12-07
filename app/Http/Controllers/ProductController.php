@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreProductRequest;
 
 class ProductController extends Controller
 {
@@ -34,23 +35,18 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreProductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'desc' => 'required|string',
-            'quantity' => 'required|numeric',
-            'category' => 'required'
-        ]);
+        $validated = $request->validated();
 
         $product = new Product();
-        $product->name = $request->get('name');
-        $product->desc = $request->get('desc');
-        $product->quantity = $request->get('quantity');
-        $product->category_id = $request->get('category');
+        $product->name = $validated['name'];
+        $product->desc = $validated['desc'];
+        $product->quantity = $validated['quantity'];
+        $product->category_id = $validated['category'];
         $product->save();
 
         return redirect()->route('home')
@@ -83,23 +79,18 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreProductRequest  $request
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(StoreProductRequest $request, Product $product)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'desc' => 'required|string',
-            'quantity' => 'required|numeric',
-            'category' => 'required'
-        ]);
+        $validated = $request->validated();
 
-        $product->name = $request->get('name');
-        $product->desc = $request->get('desc');
-        $product->quantity = $request->get('quantity');
-        $product->category_id = $request->get('category');
+        $product->name = $validated['name'];
+        $product->desc = $validated['desc'];
+        $product->quantity = $validated['quantity'];
+        $product->category_id = $validated['category'];
         $product->save();
 
         return redirect()->route('home')
